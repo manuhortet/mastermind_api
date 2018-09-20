@@ -1,6 +1,5 @@
 import json
-import flask_restful
-
+from app.api import app
 from unittest import TestCase
 
 
