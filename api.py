@@ -14,6 +14,8 @@ tries = 0
 
 def get_feedback(guess, code):
     feedback = {"black": 0, "white": 0}
+    feedback["black"] = sum(a == b for a, b in zip(guess, code))
+    feedback["white"] = sum(min(guess.count(color), code.count(color))) for color in colors) - feedback['black']
     return feedback
 
 
@@ -21,11 +23,15 @@ class Game(Resource):
     def get(self):
         global code, tries
         code = random.sample(colors, 4)
+        history = []
+        tries = 0
         return {"colors": colors}, 201
 
 class Guess(Resource):
     def put(self):
         global history, tries
+        if not code:
+            return {"There's no game being played currently"}, 400
         guess = request.get_json(force=True)
         if len(guess) is 4:
             feedback = get_feedback(guess, code)
@@ -41,6 +47,11 @@ class Guess(Resource):
         else:
             return {"Bad number of colors! (4 colors should be introduced)"}, 400
 
+class History(Resource):
+    def get(self):
+        return {"history": history}
+
 
 api.add_resource(Game, "/new_game")
+api.add_resource(History, "/history")
 api.add_resource(Guess, "/new_guess")
