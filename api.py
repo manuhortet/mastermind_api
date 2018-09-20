@@ -55,3 +55,6 @@ class History(Resource):
 api.add_resource(Game, "/new_game")
 api.add_resource(History, "/history")
 api.add_resource(Guess, "/new_guess")
+
+if __name__ == '__main__':
+    app.run(debug=True)
